@@ -1,0 +1,29 @@
++Aggregate
+=Entity
+-ValueObject
+
++Request:
+    -StudentId
+    -CommentId*
+    -AchievementId?
++Student:
+    -AchievementId*
+    -RequestId*
+    -UserId
++Admin:
+    -CommentId*
+    -AchievementId*
+    -ActivityId*
+    -UserId
++Achievement:
+    -StudentId
+    -RequestId
+    -AdminId
++Comment:
+    -RequestId
+    -AdminId
++Activity:
+    -AdminId
++User:
+    -StudentId
+    -AdminId
