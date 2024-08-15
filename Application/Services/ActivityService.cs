@@ -1,13 +1,14 @@
 using System.Security.Claims;
+using Application.Commands;
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using FluentResults;
 
 namespace Application.Services;
 
 public class ActivityService : IActivityService
 {
-    public Task<Result<ActivityDto>> Create(ClaimsPrincipal user, string name, DateTime startimgDate, DateTime endingDate, string Preview, string Link)
+    public Task<Result<ActivityDto>> Create(NewActivityCommand command)
     {
         throw new NotImplementedException();
     }

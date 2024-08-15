@@ -1,5 +1,6 @@
+using Application.Commands;
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Contracts.Activities;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +14,17 @@ public class ActivityController(IActivityService activityService) : ApiControlle
     [HttpPost]
     //[Authorize] admin only
     [Produces(typeof(ActivityFullResponse))]
-    public async Task<IActionResult> NewActivity([FromBody] ActivityRequest request)
+    public async Task<IActionResult> NewActivity([FromBody] NewActivityRequest request)
     {
         Result<ActivityDto> result = await _activityService.Create(
-            HttpContext.User,
-            request.Name,
-            request.StartingDate,
-            request.EndingDate,
-            request.Preview,
-            request.Link
-        );
+            new NewActivityCommand(
+                HttpContext.User,
+                request.Name,
+                request.StartingDate,
+                request.EndingDate,
+                request.Preview,
+                request.Link
+            ));
         return ResultToResponse(result, ToFullResponse);
     }
     [HttpGet("{id}")]

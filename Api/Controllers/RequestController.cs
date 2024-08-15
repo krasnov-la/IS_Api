@@ -1,12 +1,12 @@
 using System;
+using Application.Commands;
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Contracts.Achievements;
 using Contracts.Comments;
 using Contracts.VerificationRequests;
 using Domain.Enums;
 using FluentResults;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -19,13 +19,14 @@ public class RequestController(IRequestService requestService) : ApiController
     [HttpPost]
     //[Authorize]
     [Produces(typeof(VerificationRequestFullResponse))]
-    public async Task<IActionResult> NewRequest([FromBody] VerificationRequestRequest request)
+    public async Task<IActionResult> NewRequest([FromBody] NewVerificationRequestRequest request)
     {
         Result<RequestDto> result = await _requestService.Create(
-            HttpContext.User,
-            request.EventName, 
-            request.Description,
-            request.ImageIds);
+            new CreateRequestCommand(
+                HttpContext.User,
+                request.EventName, 
+                request.Description,
+                request.ImageIds));
         
         return ResultToResponse(result, ToFullResponse);
     }
@@ -48,21 +49,23 @@ public class RequestController(IRequestService requestService) : ApiController
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
-    [HttpGet("user/{login}/{count}")]
+    [HttpGet("user/{email}/{count}")]
     //[Authorize] admin only
     [Produces(typeof(List<VerificationRequestResponse>))]
-    public async Task<IActionResult> GetByUser(string login, int count)
+    public async Task<IActionResult> GetByUser(string email, int count)
     {
-        Result<List<RequestDto>> result = await _requestService.GetByLogin(login, count);
+        Result<List<RequestDto>> result = await _requestService.GetByEmail(
+            new GetRequestsByEmailCommand(email, count));
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
-    [HttpGet("user/{login}/{status}/{count}")]
+    [HttpGet("user/{email}/{status}/{count}")]
     //[Authorize] admin only
     [Produces(typeof(List<VerificationRequestResponse>))]
-    public async Task<IActionResult> GetByUser(string login, RequestStatus status, int count)
+    public async Task<IActionResult> GetByUser(string email, RequestStatus status, int count)
     {
-        Result<List<RequestDto>> result = await _requestService.GetByLogin(login, status, count);
+        Result<List<RequestDto>> result = await _requestService.GetByEmail(
+            new GetRequestsByEmailCommand(email, count, status));
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
@@ -71,7 +74,8 @@ public class RequestController(IRequestService requestService) : ApiController
     [Produces(typeof(List<VerificationRequestResponse>))]
     public async Task<IActionResult> GetSelf(int count)
     {
-        Result<List<RequestDto>> result = await _requestService.GetSelf(HttpContext.User, count);
+        Result<List<RequestDto>> result = await _requestService.GetSelf(
+            new GetSelfRequestsCommand(HttpContext.User, count));
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
@@ -80,7 +84,8 @@ public class RequestController(IRequestService requestService) : ApiController
     [Produces(typeof(List<VerificationRequestResponse>))]
     public async Task<IActionResult> GetSelfWithStatus(RequestStatus requestStatus, int count)
     {
-        Result<List<RequestDto>> result = await _requestService.GetSelf(HttpContext.User, requestStatus, count);
+        Result<List<RequestDto>> result = await _requestService.GetSelf(
+            new GetSelfRequestsCommand(HttpContext.User, count, requestStatus));
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
@@ -95,9 +100,10 @@ public class RequestController(IRequestService requestService) : ApiController
     public async Task<IActionResult> Reject([FromRoute] Guid requestId, [FromBody] RejectionRequest request)
     {
         Result result = await _requestService.Reject(
+            new RejectRequestCommand(
             HttpContext.User,
             requestId, 
-            request.Message);
+            request.Message));
 
         return ResultToResponse(result);
     }
@@ -106,10 +112,11 @@ public class RequestController(IRequestService requestService) : ApiController
     public async Task<IActionResult> Approve([FromRoute] Guid requestId, [FromBody] ApprovalRequest request)
     {
         Result result = await _requestService.Approve(
-            HttpContext.User,
-            requestId,
-            request.Score
-        );
+            new ApproveRequestCommand(
+                HttpContext.User,
+                requestId,
+                request.Score
+        ));
 
         return ResultToResponse(result);
     }

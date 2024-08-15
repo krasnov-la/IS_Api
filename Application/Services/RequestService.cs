@@ -1,6 +1,7 @@
 using System.Security.Claims;
+using Application.Commands;
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Domain.Enums;
 using FluentResults;
 
@@ -8,12 +9,12 @@ namespace Application.Services;
 
 public class RequestService : IRequestService
 {
-    public Task<Result> Approve(ClaimsPrincipal user, Guid reqrequestId, float score)
+    public Task<Result> Approve(ApproveRequestCommand command)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Result<RequestDto>> Create(ClaimsPrincipal user, string eventName, string description, IEnumerable<Guid> imageIds)
+    public Task<Result<RequestDto>> Create(CreateRequestCommand command)
     {
         throw new NotImplementedException();
     }
@@ -23,27 +24,17 @@ public class RequestService : IRequestService
         throw new NotImplementedException();
     }
 
+    public Task<Result<List<RequestDto>>> GetByEmail(GetRequestsByEmailCommand command)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<Result<RequestDto>> GetById(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Result<List<RequestDto>>> GetByLogin(string login, int count)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result<List<RequestDto>>> GetByLogin(string login, RequestStatus status, int count)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result<List<RequestDto>>> GetSelf(ClaimsPrincipal user, int count)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result<List<RequestDto>>> GetSelf(ClaimsPrincipal user, RequestStatus requestStatus, int count)
+    public Task<Result<List<RequestDto>>> GetSelf(GetSelfRequestsCommand command)
     {
         throw new NotImplementedException();
     }
@@ -53,7 +44,7 @@ public class RequestService : IRequestService
         throw new NotImplementedException();
     }
 
-    public Task<Result> Reject(ClaimsPrincipal user, Guid requestId, string message)
+    public Task<Result> Reject(RejectRequestCommand command)
     {
         throw new NotImplementedException();
     }

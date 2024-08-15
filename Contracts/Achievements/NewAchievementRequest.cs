@@ -1,5 +1,5 @@
 namespace Contracts.Achievements;
-public record AchievementRequest(
+public record NewAchievementRequest(
     Guid RequestId,
     float Score
 );

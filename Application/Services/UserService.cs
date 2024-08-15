@@ -1,6 +1,7 @@
 using System.Security.Claims;
+using Application.Commands;
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Domain.Enums;
 using FluentResults;
 
@@ -8,7 +9,7 @@ namespace Application.Services;
 
 public class UserService : IUserService
 {
-    public Task<Result> Ban(ClaimsPrincipal user, string email)
+    public Task<Result> Ban(BanUserCommand command)
     {
         throw new NotImplementedException();
     }
@@ -18,17 +19,17 @@ public class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public Task<Result> Unban(ClaimsPrincipal user, string email)
+    public Task<Result> Unban(BanUserCommand command)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Result<UserDto>> Update(ClaimsPrincipal user, string? firstName, string? middleName, string? lastName, string? nickname, string? course)
+    public Task<Result<UserDto>> Update(UpdateUserCommand command)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Result> Verify(string email, Role role)
+    public Task<Result> Verify(UserVerificationCommand command)
     {
         throw new NotImplementedException();
     }

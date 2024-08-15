@@ -1,5 +1,5 @@
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Contracts.Ratings;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;

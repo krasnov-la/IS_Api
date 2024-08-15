@@ -1,5 +1,6 @@
+using Application.Commands;
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Contracts.Users;
 using Domain.Enums;
 using FluentResults;
@@ -32,7 +33,8 @@ public class UserController(IUserService userService) : ApiController
     //[Authorize] admin only
     public async Task<IActionResult> Verify(string email, Role role)
     {
-        Result result = await _userService.Verify(email, role);
+        Result result = await _userService.Verify(
+            new UserVerificationCommand(email, role));
         return ResultToResponse(result);
     }
 
@@ -42,13 +44,14 @@ public class UserController(IUserService userService) : ApiController
     public async Task<IActionResult> UpdateInfo([FromBody] UserUpdateRequest request)
     {
         Result<UserDto> result = await _userService.Update(
-            HttpContext.User,
-            request.FirstName,
-            request.MiddleName,
-            request.LastName,
-            request.Nickname,
-            request.Course
-        );
+            new UpdateUserCommand(
+                HttpContext.User,
+                request.FirstName,
+                request.MiddleName,
+                request.LastName,
+                request.Nickname,
+                request.Course
+        ));
         return ResultToResponse(result, ToFullResponse);    
     }
 
@@ -56,14 +59,14 @@ public class UserController(IUserService userService) : ApiController
     //[Authorize] admin only
     public async Task<IActionResult> Ban(string email)
     {
-        Result result = await _userService.Ban(HttpContext.User, email);
+        Result result = await _userService.Ban(new BanUserCommand(HttpContext.User, email));
         return ResultToResponse(result);
     }
     [HttpPost("{email}/unban")]
     //[Authorize] admin only
     public async Task<IActionResult> Unban(string email)
     {
-        Result result = await _userService.Unban(HttpContext.User, email);
+        Result result = await _userService.Unban(new BanUserCommand(HttpContext.User, email));
         return ResultToResponse(result);
     }
 

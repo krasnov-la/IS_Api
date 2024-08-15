@@ -1,6 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Interfaces.Services;
 using Application.Services;
-using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +10,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<IImageService, ImageService>();
+        services.AddScoped<IRatingService, RatingService>();
         services.AddScoped<IRequestService, RequestService>();
         services.AddScoped<IUserService, UserService>();
         return services;
