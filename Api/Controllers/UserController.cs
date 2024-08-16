@@ -1,4 +1,4 @@
-using Application.Commands;
+using Application.Commands.Users;
 using Application.DTO;
 using Application.Interfaces.Services;
 using Contracts.Users;

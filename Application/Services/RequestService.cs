@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Application.Commands;
+using Application.Commands.Requests;
 using Application.DTO;
 using Application.Interfaces.Services;
 using Domain.Enums;

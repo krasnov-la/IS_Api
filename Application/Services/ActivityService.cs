@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Application.Commands;
+using Application.Commands.Activities;
 using Application.DTO;
 using Application.Interfaces.Services;
 using FluentResults;
@@ -24,6 +24,11 @@ public class ActivityService : IActivityService
     }
 
     public Task<Result<ActivityDto>> GetById(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Result<ActivityDto>> Update(UpdateActivityCommand updateActivityCommand)
     {
         throw new NotImplementedException();
     }

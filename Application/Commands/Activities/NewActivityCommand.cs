@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Application.Commands;
+namespace Application.Commands.Activities;
 
 public record NewActivityCommand(
     ClaimsPrincipal User,

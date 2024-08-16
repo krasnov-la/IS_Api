@@ -1,6 +1,6 @@
 using Domain.Enums;
 
-namespace Application.Commands;
+namespace Application.Commands.Users;
 
 public record UserVerificationCommand(
     string Email,

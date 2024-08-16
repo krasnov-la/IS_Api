@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Application.Commands;
+namespace Application.Commands.Requests;
 
 public record CreateRequestCommand(
     ClaimsPrincipal User,

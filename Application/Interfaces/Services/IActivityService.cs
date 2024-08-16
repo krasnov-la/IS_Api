@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Application.Commands;
+using Application.Commands.Activities;
 using Application.DTO;
 using FluentResults;
 
@@ -11,4 +11,5 @@ public interface IActivityService
     Task<Result> Delete(Guid id);
     Task<Result<List<ActivityDto>>> GetActive();
     Task<Result<ActivityDto>> GetById(Guid id);
+    Task<Result<ActivityDto>> Update(UpdateActivityCommand updateActivityCommand);
 }

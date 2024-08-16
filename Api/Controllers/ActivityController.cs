@@ -1,4 +1,4 @@
-using Application.Commands;
+using Application.Commands.Activities;
 using Application.DTO;
 using Application.Interfaces.Services;
 using Contracts.Activities;
@@ -25,6 +25,22 @@ public class ActivityController(IActivityService activityService) : ApiControlle
                 request.Preview,
                 request.Link
             ));
+        return ResultToResponse(result, ToFullResponse);
+    }
+    [HttpPatch("{id}")]
+    [Produces(typeof(ActivityFullResponse))]
+    public async Task<IActionResult> UpdateActivity(Guid id, UpdateActivityRequest request)
+    {
+        Result<ActivityDto> result = await _activityService.Update(
+            new UpdateActivityCommand(
+                HttpContext.User,
+                request.Name,
+                request.StartingDate,
+                request.EndingDate,
+                request.Preview,
+                request.Link
+            )
+        );
         return ResultToResponse(result, ToFullResponse);
     }
     [HttpGet("{id}")]

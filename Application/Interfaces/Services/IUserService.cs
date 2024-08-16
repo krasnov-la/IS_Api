@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Application.Commands;
+using Application.Commands.Users;
 using Application.DTO;
 using Domain.Enums;
 using FluentResults;

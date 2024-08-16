@@ -1,5 +1,4 @@
-using System;
-using Application.Commands;
+using Application.Commands.Requests;
 using Application.DTO;
 using Application.Interfaces.Services;
 using Contracts.Achievements;
@@ -40,52 +39,53 @@ public class RequestController(IRequestService requestService) : ApiController
         return ResultToResponse(result, ToFullResponse);
     }
 
-    [HttpGet("unscored/{count}")]
+    [HttpGet("unscored/{count}/{offset}")]
     //[Authorize] admin only
     [Produces(typeof(List<VerificationRequestResponse>))]
-    public async Task<IActionResult> GetUnscored(int count)
+    public async Task<IActionResult> GetUnscored(int count, int offset)
     {
-        Result<List<RequestDto>> result = await _requestService.GetUnscored(count);
+        Result<List<RequestDto>> result = await _requestService.GetUnscored(
+            new GetUnscoredCommand(count, offset));
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
-    [HttpGet("user/{email}/{count}")]
+    [HttpGet("user/{email}/{count}/{offset}")]
     //[Authorize] admin only
     [Produces(typeof(List<VerificationRequestResponse>))]
-    public async Task<IActionResult> GetByUser(string email, int count)
+    public async Task<IActionResult> GetByUser(string email, int count, int offset)
     {
         Result<List<RequestDto>> result = await _requestService.GetByEmail(
-            new GetRequestsByEmailCommand(email, count));
+            new GetRequestsByEmailCommand(email, count, offset));
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
-    [HttpGet("user/{email}/{status}/{count}")]
+    [HttpGet("user/{email}/{status}/{count}/{offset}")]
     //[Authorize] admin only
     [Produces(typeof(List<VerificationRequestResponse>))]
-    public async Task<IActionResult> GetByUser(string email, RequestStatus status, int count)
+    public async Task<IActionResult> GetByUser(string email, RequestStatus status, int count, int offset)
     {
         Result<List<RequestDto>> result = await _requestService.GetByEmail(
-            new GetRequestsByEmailCommand(email, count, status));
+            new GetRequestsByEmailCommand(email, count, offset, status));
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
-    [HttpGet("self/{count}")]
+    [HttpGet("self/{count}/{offset}")]
     //[Authorize]
     [Produces(typeof(List<VerificationRequestResponse>))]
-    public async Task<IActionResult> GetSelf(int count)
+    public async Task<IActionResult> GetSelf(int count, int offset)
     {
         Result<List<RequestDto>> result = await _requestService.GetSelf(
-            new GetSelfRequestsCommand(HttpContext.User, count));
+            new GetSelfRequestsCommand(HttpContext.User, count, offset));
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
-    [HttpGet("self/{requestStatus}/{count}")]
+    [HttpGet("self/{requestStatus}/{count}/{offset}")]
     //[Authorize]
     [Produces(typeof(List<VerificationRequestResponse>))]
-    public async Task<IActionResult> GetSelfWithStatus(RequestStatus requestStatus, int count)
+    public async Task<IActionResult> GetSelfWithStatus(RequestStatus requestStatus, int count, int offset)
     {
         Result<List<RequestDto>> result = await _requestService.GetSelf(
-            new GetSelfRequestsCommand(HttpContext.User, count, requestStatus));
+            new GetSelfRequestsCommand(HttpContext.User, count, offset, requestStatus));
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
