@@ -1,36 +1,89 @@
-using System.Security.Claims;
 using Application.Commands.Users;
 using Application.DTO;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
+using Domain.Entities;
 using Domain.Enums;
 using FluentResults;
 
 namespace Application.Services;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepository) : ServiceBase, IUserService
 {
-    public Task<Result> Ban(BanUserCommand command)
+    private readonly IUserRepository _userRepository = userRepository;
+    public async Task<Result> Ban(BanUserCommand command)
     {
-        throw new NotImplementedException();
+        //TODO: Validate 
+        Result<User> result = await _userRepository.GetByEmail(command.Email);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        var user = result.Value;
+
+        user.Ban(new Admin(ExtractEmail(command.User)));
+
+        return await _userRepository.Update(user);
     }
 
-    public Task<Result<UserDto>> GetByMail(string email)
+    public async Task<Result<UserDto>> GetByMail(string email)
     {
-        throw new NotImplementedException();
+        Result<User> result = await _userRepository.GetByEmail(email);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        return Result.Ok(ToDto(result.Value));
     }
 
-    public Task<Result> Unban(BanUserCommand command)
+    public async Task<Result> Unban(BanUserCommand command)
     {
-        throw new NotImplementedException();
+        //TODO: Validate 
+        Result<User> result = await _userRepository.GetByEmail(command.Email);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        var user = result.Value;
+
+        user.Unban(new Admin(ExtractEmail(command.User)));
+
+        return await _userRepository.Update(user);
     }
 
-    public Task<Result<UserDto>> Update(UpdateUserCommand command)
+    public async Task<Result<UserDto>> Update(UpdateUserCommand command)
     {
-        throw new NotImplementedException();
+        //TODO: Validate all
+        Result<User> result = await _userRepository.GetByEmail(ExtractEmail(command.User));
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        var user = result.Value;
+
+        user.Update(
+            command.Nickname,
+            command.FirstName,
+            command.LastName,
+            command.MiddleName,
+            command.Course
+        );
+
+        return await _userRepository.Update(user);
     }
 
-    public Task<Result> Verify(UserVerificationCommand command)
+    public async Task<Result> Verify(UserVerificationCommand command)
     {
-        throw new NotImplementedException();
+        //TODO: Validate role
+        Result<User> result = await _userRepository.GetByEmail(command.Email);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        var user = result.Value;
+
+        user.Verify(command.Role);
+
+        return await _userRepository.Update(user);
+    }
+
+    private static UserDto ToDto(User user)
+    {
+        return new UserDto(
+            user.AvatarImgLink,
+            user.Nickname,
+            user.EmailAddress,
+            user.FirstName,
+            user.LastName,
+            user.MiddleName,
+            user.Role.ToString(),
+            user.Course,
+            user.BannedBy
+        );
     }
 }

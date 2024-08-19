@@ -1,19 +1,23 @@
 using System.Security.Claims;
 using Application.DTO;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
+using Domain.Entities;
 using FluentResults;
 
 namespace Application.Services;
 
-public class RatingService : IRatingService
+public class RatingService(IRatingRepository ratingRepository) : ServiceBase, IRatingService
 {
-    public Task<Result<List<RatingDto>>> GetGlobalRating()
+    private readonly IRatingRepository _ratingRepository = ratingRepository;
+    public async Task<Result<List<RatingDto>>> GetGlobalRating()
     {
-        throw new NotImplementedException();
+        return await _ratingRepository.GetGlobalRating();
     }
 
-    public Task<Result<RatingDto>> GetPersonalRating(ClaimsPrincipal user)
+    public async Task<Result<RatingDto>> GetPersonalRating(ClaimsPrincipal user)
     {
-        throw new NotImplementedException();
+        //TODO: Validate role
+        return await _ratingRepository.GetPersonalRating(new Student(ExtractEmail(user)));
     }
 }

@@ -4,5 +4,5 @@ namespace Application.Commands.Requests;
 
 public record ApproveRequestCommand(
     ClaimsPrincipal User,
-    Guid ReqrequestId,
+    Guid RequestId,
     float Score);

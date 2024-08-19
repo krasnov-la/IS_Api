@@ -1,56 +1,146 @@
 using System.Security.Claims;
 using Application.Commands.Requests;
 using Application.DTO;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
+using Domain.Entities;
 using Domain.Enums;
 using FluentResults;
 
 namespace Application.Services;
 
-public class RequestService : IRequestService
+public class RequestService(IRequestRepository requestRepository) : ServiceBase, IRequestService
 {
-    public Task<Result> Approve(ApproveRequestCommand command)
+    private readonly IRequestRepository _requestRepository = requestRepository;
+    public async Task<Result> Approve(ApproveRequestCommand command)
     {
-        throw new NotImplementedException();
+        //Validate score
+        Result<Request> result = await _requestRepository.GetById(command.RequestId);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        var request = result.Value;
+
+        request.Approve(
+            new Admin(ExtractEmail(command.User)),
+            command.Score);
+
+        return await _requestRepository.Update(request);
     }
 
-    public Task<Result<RequestDto>> Create(CreateRequestCommand command)
+    public async Task<Result<RequestDto>> Create(CreateRequestCommand command)
     {
-        throw new NotImplementedException();
+        //TODO: Validate images and role
+        var request = Request.Create(
+            new Student(ExtractEmail(command.User)),
+            command.EventName,
+            command.Description,
+            command.ImageIds.Select(id => new Image(id)).ToList()
+        );
+
+        Result result = await _requestRepository.Create(request);
+
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        return Result.Ok(ToRequestDto(request));
     }
 
-    public Task<Result> DeleteById(Guid id)
+    public async Task<Result> DeleteById(Guid id)
     {
-        throw new NotImplementedException();
+        return await _requestRepository.DeleteById(id);
     }
 
-    public Task<Result<List<RequestDto>>> GetByEmail(GetRequestsByEmailCommand command)
+    public async Task<Result<List<RequestDto>>> GetByEmail(GetRequestsByEmailCommand command)
     {
-        throw new NotImplementedException();
+        //Validate email
+        Result<List<Request>> result = await _requestRepository.GetByEmail(
+            command.Email,
+            command.Status,
+            command.Count,
+            command.Offset);
+
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        return Result.Ok(result.Value.Select(ToRequestDto).ToList());
     }
 
-    public Task<Result<RequestDto>> GetById(Guid id)
+    public async Task<Result<RequestDto>> GetById(Guid id)
     {
-        throw new NotImplementedException();
+        Result<Request> result = await _requestRepository.GetById(id);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        return Result.Ok(ToRequestDto(result.Value));
     }
 
     public Task<Result<List<RequestDto>>> GetSelf(GetSelfRequestsCommand command)
     {
-        throw new NotImplementedException();
+        return GetByEmail(
+            new GetRequestsByEmailCommand(
+                ExtractEmail(command.User),
+                command.Count,
+                command.Offset,
+                command.RequestStatus
+            )
+        );
     }
 
-    public Task<Result<List<RequestDto>>> GetUnscored(int count)
+    public async Task<Result<List<RequestDto>>> GetUnscored(GetUnscoredCommand getUnscoredCommand)
     {
-        throw new NotImplementedException();
+        Result<List<Request>> result = await _requestRepository.GetUnscored();
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        return Result.Ok(result.Value.Select(ToRequestDto).ToList());
     }
 
-    public Task<Result> Reject(RejectRequestCommand command)
+    public async Task<Result> Reject(RejectRequestCommand command)
     {
-        throw new NotImplementedException();
+        //Validate message
+        Result<Request> result = await _requestRepository.GetById(command.RequestId);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        var request = result.Value;
+
+        request.Reject(
+            new Admin(ExtractEmail(command.User)),
+            command.Message);
+
+        return await _requestRepository.Update(request);
     }
 
-    public Task<Result> Revoke(Guid requestId)
+    public async Task<Result> Revoke(Guid requestId)
     {
-        throw new NotImplementedException();
+        Result<Request> result = await _requestRepository.GetById(requestId);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        var request = result.Value;
+
+        request.Revoke();
+
+        return await _requestRepository.Update(request);
+    }
+
+    private static RequestDto ToRequestDto(Request request)
+    {
+        return new RequestDto(
+            request.Id,
+            request.Student.EmailAddress,
+            request.EventName,
+            request.Description,
+            request.CreatedAt,
+            request.Status.ToString(),
+            request.Achievement is null ? null : ToAchievementDto(request.Achievement),
+            request.Comment is null ? null : ToCommentDto(request.Comment),
+            request.Images.Select(i => i.Guid.ToString())
+        );
+    }
+
+    private static CommentDto ToCommentDto(Comment comment)
+    {
+        return new CommentDto(
+            comment.Id,
+            comment.Message,
+            comment.Admin.EmailAddress
+        );
+    }
+
+    private static AchievementDto ToAchievementDto(Achievement achievement)
+    {
+        return new AchievementDto(
+            achievement.Id,
+            achievement.Score,
+            achievement.Admin.EmailAddress
+        );
     }
 }

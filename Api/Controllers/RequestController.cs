@@ -158,9 +158,7 @@ public class RequestController(IRequestService requestService) : ApiController
     {
         return new CommentFullResponse(
             Id: dto.Id,
-            CommentingDateTime: dto.CommentingDateTime,
             CommentText: dto.CommentText,
-            RequestId: dto.RequestId,
             CommentedByAdmin: dto.CommentedByAdmin
         );
     }
@@ -171,8 +169,6 @@ public class RequestController(IRequestService requestService) : ApiController
         return new AchievementDetailedResponse(
             Id: dto.Id,
             Score: dto.Score,
-            RequestId: dto.RequestId,
-            VerificationDateTime: dto.VerificationDateTime,
             VerificatedByAdmin: dto.VerificatedByAdmin
         );
     }

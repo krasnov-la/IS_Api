@@ -19,6 +19,7 @@ public class UserController(IUserService userService) : ApiController
         Result<UserDto> result = await _userService.GetByMail(email);
         return ResultToResponse(result, ToShortResponse);
     }
+    //TODO guest page
 
     [HttpGet("{email}/full")]
     //[Authorize] admin only
