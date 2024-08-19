@@ -13,7 +13,7 @@ public class RatingController(IRatingService ratingService) : ApiController
     private readonly IRatingService _ratingService = ratingService;
 
     [HttpGet("personal")]
-    //[Authorize]
+    //[Authorize] student only
     [Produces(typeof(RatingResponse))]
     public async Task<IActionResult> PersonalRating()
     {

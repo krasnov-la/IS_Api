@@ -9,12 +9,14 @@ using FluentResults;
 
 namespace Application.Services;
 
-public class ActivityService(IActivityRepository activityRepo) : ServiceBase, IActivityService
+public class ActivityService(IActivityRepository activityRepo, IImageRepository imageRepository) : ServiceBase, IActivityService
 {
     private readonly IActivityRepository _activityRepo = activityRepo;
+    private readonly IImageRepository _imageRepository = imageRepository;
     public async Task<Result<ActivityDto>> Create(NewActivityCommand command)
     {
-        //TODO: image validation
+        if (!_imageRepository.ValidateImage(new Guid(command.Preview)))
+            return Result.Fail(new ImageInvalidError(new Guid(command.Preview)));
         var activity = Activity.Create(
             command.Name,
             new Admin(ExtractEmail(command.User)),
@@ -52,7 +54,8 @@ public class ActivityService(IActivityRepository activityRepo) : ServiceBase, IA
 
     public async Task<Result<ActivityDto>> Update(UpdateActivityCommand command)
     {
-        //TODO: image validation
+        if (command.Preview is not null && !_imageRepository.ValidateImage(new Guid(command.Preview)))
+            return Result.Fail(new ImageInvalidError(new Guid(command.Preview)));
         Result<Activity?> result = await _activityRepo.GetById(command.Id);
         if (result.IsFailed) return Result.Fail(result.Errors);
         if (result.Value is null) return Result.Fail(

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Application.Commands.Requests;
 using Application.DTO;
+using Application.Errors.Common;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;
@@ -9,12 +10,14 @@ using FluentResults;
 
 namespace Application.Services;
 
-public class RequestService(IRequestRepository requestRepository) : ServiceBase, IRequestService
+public class RequestService(IRequestRepository requestRepository, IImageRepository imageRepository) : ServiceBase, IRequestService
 {
     private readonly IRequestRepository _requestRepository = requestRepository;
+    private readonly IImageRepository _imageRepository = imageRepository;
     public async Task<Result> Approve(ApproveRequestCommand command)
     {
-        //Validate score
+        if (command.Score <= 0) return Result.Fail(new NegativeScoreError());
+        
         Result<Request> result = await _requestRepository.GetById(command.RequestId);
         if (result.IsFailed) return Result.Fail(result.Errors);
         var request = result.Value;
@@ -25,10 +28,12 @@ public class RequestService(IRequestRepository requestRepository) : ServiceBase,
 
         return await _requestRepository.Update(request);
     }
-
+    //Authorize non admin
     public async Task<Result<RequestDto>> Create(CreateRequestCommand command)
     {
-        //TODO: Validate images and role
+        var failed = command.ImageIds.Where(i => !_imageRepository.ValidateImage(i));
+        if (failed.Any()) return Result.Fail(failed.Select(f => new ImageInvalidError(f)));
+
         var request = Request.Create(
             new Student(ExtractEmail(command.User)),
             command.EventName,
@@ -49,7 +54,6 @@ public class RequestService(IRequestRepository requestRepository) : ServiceBase,
 
     public async Task<Result<List<RequestDto>>> GetByEmail(GetRequestsByEmailCommand command)
     {
-        //Validate email
         Result<List<Request>> result = await _requestRepository.GetByEmail(
             command.Email,
             command.Status,
@@ -88,7 +92,7 @@ public class RequestService(IRequestRepository requestRepository) : ServiceBase,
 
     public async Task<Result> Reject(RejectRequestCommand command)
     {
-        //Validate message
+        //TODO? Validate message
         Result<Request> result = await _requestRepository.GetById(command.RequestId);
         if (result.IsFailed) return Result.Fail(result.Errors);
         var request = result.Value;

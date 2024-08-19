@@ -1,5 +1,6 @@
 using Application.Commands.Users;
 using Application.DTO;
+using Application.Errors.Common;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;
@@ -13,7 +14,6 @@ public class UserService(IUserRepository userRepository) : ServiceBase, IUserSer
     private readonly IUserRepository _userRepository = userRepository;
     public async Task<Result> Ban(BanUserCommand command)
     {
-        //TODO: Validate 
         Result<User> result = await _userRepository.GetByEmail(command.Email);
         if (result.IsFailed) return Result.Fail(result.Errors);
         var user = result.Value;
@@ -32,7 +32,6 @@ public class UserService(IUserRepository userRepository) : ServiceBase, IUserSer
 
     public async Task<Result> Unban(BanUserCommand command)
     {
-        //TODO: Validate 
         Result<User> result = await _userRepository.GetByEmail(command.Email);
         if (result.IsFailed) return Result.Fail(result.Errors);
         var user = result.Value;
@@ -44,7 +43,6 @@ public class UserService(IUserRepository userRepository) : ServiceBase, IUserSer
 
     public async Task<Result<UserDto>> Update(UpdateUserCommand command)
     {
-        //TODO: Validate all
         Result<User> result = await _userRepository.GetByEmail(ExtractEmail(command.User));
         if (result.IsFailed) return Result.Fail(result.Errors);
         var user = result.Value;
@@ -62,7 +60,8 @@ public class UserService(IUserRepository userRepository) : ServiceBase, IUserSer
 
     public async Task<Result> Verify(UserVerificationCommand command)
     {
-        //TODO: Validate role
+        if (command.Role == Role.Unverified || command.Role == Role.Banned)
+            return Result.Fail(new InvalidRoleError(command.Role));
         Result<User> result = await _userRepository.GetByEmail(command.Email);
         if (result.IsFailed) return Result.Fail(result.Errors);
         var user = result.Value;

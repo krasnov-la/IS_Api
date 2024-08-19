@@ -16,8 +16,7 @@ public class RatingService(IRatingRepository ratingRepository) : ServiceBase, IR
     }
 
     public async Task<Result<RatingDto>> GetPersonalRating(ClaimsPrincipal user)
-    {
-        //TODO: Validate role
+    {        
         return await _ratingRepository.GetPersonalRating(new Student(ExtractEmail(user)));
     }
 }
