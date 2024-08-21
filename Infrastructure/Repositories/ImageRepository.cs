@@ -16,7 +16,7 @@ public class ImageRepository : IImageRepository
         throw new NotImplementedException();
     }
 
-    public Task<Result> ValidateImage(Image image)
+    public bool ValidateImage(Guid imageId)
     {
         throw new NotImplementedException();
     }

@@ -8,9 +8,9 @@ namespace Api.Controllers;
 public class AuthenticationController(IAuthenticationService authenticationService) : ApiController
 {
     private readonly IAuthenticationService _authService = authenticationService;
-    [HttpGet("{oAuth}")]
-    public async Task<IActionResult> GenerateToken(string oAuth)
+    [HttpGet("login/{oAuth}")]
+    public async Task<IActionResult> Login(string oAuth)
     {
-        return Ok(await _authService.GenerateToken(oAuth));
+        return Ok(await _authService.Login(oAuth));
     }
 }
