@@ -1,5 +1,5 @@
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Contracts.Images;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +15,7 @@ public class ImagesController(IImageService imageService) : ApiController
     [HttpPost]
     //[Authorize]
     [Produces(typeof(ImageResponse))]
-    public async Task<IActionResult> PostNewImage([FromForm] IFormFile file)
+    public async Task<IActionResult> PostNewImage([FromBody] IFormFile file)
     {
         Result<ImageDto> result = await _imageService.Upload(file.OpenReadStream());
         return ResultToResponse(result, v => new ImageResponse(v.Id));

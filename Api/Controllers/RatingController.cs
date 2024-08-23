@@ -1,5 +1,5 @@
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Contracts.Ratings;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,7 @@ public class RatingController(IRatingService ratingService) : ApiController
     private readonly IRatingService _ratingService = ratingService;
 
     [HttpGet("personal")]
-    //[Authorize]
+    //[Authorize] student only
     [Produces(typeof(RatingResponse))]
     public async Task<IActionResult> PersonalRating()
     {

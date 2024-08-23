@@ -14,6 +14,16 @@ public class Request
     private RequestStatus _status;
     private Achievement? _achievement = null;
     private Comment? _comment = null;
+    public Guid Id => _id;
+    public Student Student => _student;
+    public List<Image> Images => _images;
+    public string EventName => _eventName;
+    public string Description => _description;
+    public DateTime CreatedAt => _createdAt;
+    public RequestStatus Status => _status;
+    public Achievement? Achievement => _achievement;
+    public Comment? Comment => _comment;
+
     private Request(Student student, string eventName, string description, List<Image> images)
     {
         _id = Guid.NewGuid();

@@ -1,6 +1,6 @@
 namespace Contracts.VerificationRequests;
 
-public record VerificationRequestRequest(
+public record NewVerificationRequestRequest(
     string EventName,
     string Description,
     IEnumerable<Guid> ImageIds

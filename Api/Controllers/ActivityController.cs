@@ -1,5 +1,6 @@
+using Application.Commands.Activities;
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Services;
 using Contracts.Activities;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
@@ -13,15 +14,33 @@ public class ActivityController(IActivityService activityService) : ApiControlle
     [HttpPost]
     //[Authorize] admin only
     [Produces(typeof(ActivityFullResponse))]
-    public async Task<IActionResult> NewActivity([FromBody] ActivityRequest request)
+    public async Task<IActionResult> NewActivity([FromBody] NewActivityRequest request)
     {
         Result<ActivityDto> result = await _activityService.Create(
-            HttpContext.User,
-            request.Name,
-            request.StartingDate,
-            request.EndingDate,
-            request.Preview,
-            request.Link
+            new NewActivityCommand(
+                HttpContext.User,
+                request.Name,
+                request.StartingDate,
+                request.EndingDate,
+                request.Preview,
+                request.Link
+            ));
+        return ResultToResponse(result, ToFullResponse);
+    }
+    [HttpPatch("{id}")]
+    [Produces(typeof(ActivityFullResponse))]
+    public async Task<IActionResult> UpdateActivity(Guid id, UpdateActivityRequest request)
+    {
+        Result<ActivityDto> result = await _activityService.Update(
+            new UpdateActivityCommand(
+                id,
+                HttpContext.User,
+                request.Name,
+                request.StartingDate,
+                request.EndingDate,
+                request.Preview,
+                request.Link
+            )
         );
         return ResultToResponse(result, ToFullResponse);
     }
@@ -33,11 +52,13 @@ public class ActivityController(IActivityService activityService) : ApiControlle
         Result<ActivityDto> result = await _activityService.GetById(id);
         return ResultToResponse(result, ToFullResponse);
     }
-    [HttpGet]
+    [HttpGet("count/offset")]
     [Produces(typeof(List<ActivityShortResponse>))]
-    public async Task<IActionResult> GetActive()
+    public async Task<IActionResult> GetAll(int count, int offset)
     {
-        Result<List<ActivityDto>> result = await _activityService.GetActive();
+        Result<List<ActivityDto>> result = await _activityService.GetActivities(
+            new GetActivitiesCommand(count, offset)
+        );
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
     [HttpDelete("{id}")]
@@ -47,8 +68,6 @@ public class ActivityController(IActivityService activityService) : ApiControlle
         Result result = await _activityService.Delete(id);
         return ResultToResponse(result);
     }
-
-    //TODO: Update?
 
     [NonAction]
     private static ActivityShortResponse ToShortResponse(ActivityDto dto)

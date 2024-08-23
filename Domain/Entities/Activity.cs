@@ -8,25 +8,29 @@ public class Activity
     private DateTime _start;
     private DateTime _finish;
     private Image _preview;
+    private string _link;
     public string Name => _name;
     public Guid Id => _id;
     public Admin Admin => _admin;
     public DateTime Start => _start;
     public DateTime Finish => _finish;
     public Image Preview => _preview;
+    public string Link => _link;
 
     private Activity(
         string name, 
         Admin admin, 
         DateTime start, 
         DateTime finish,
-        Image preview)
+        Image preview,
+        string link)
     {
         _name = name;
         _admin = admin;
         _start = start;
         _finish = finish;
-        _preview = preview;   
+        _preview = preview;
+        _link = link; 
     }
 
     public static Activity Create(
@@ -34,7 +38,8 @@ public class Activity
         Admin admin, 
         DateTime start, 
         DateTime finish,
-        Image preview
+        Image preview,
+        string link
     )
     {
         return new Activity(
@@ -42,7 +47,8 @@ public class Activity
             admin,
             start,
             finish,
-            preview
+            preview,
+            link
         );
     }
 
@@ -51,7 +57,8 @@ public class Activity
         string? newName = null, 
         DateTime? newStart = null, 
         DateTime? newFinish = null,
-        Image? newPreview = null
+        Image? newPreview = null,
+        string? newLink = null
     )
     {
         _admin = admin;
@@ -59,5 +66,6 @@ public class Activity
         if (newStart.HasValue) _start = newStart.Value;
         if (newFinish.HasValue) _finish = newFinish.Value;
         if (newPreview is not null) _preview = newPreview;
+        if (newLink is not null) _link = newLink;
     }
 }

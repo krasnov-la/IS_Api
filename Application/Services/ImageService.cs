@@ -1,18 +1,23 @@
 using Application.DTO;
-using Application.Interfaces;
+using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
+using Domain.Entities;
 using FluentResults;
 
 namespace Application.Services;
 
-public class ImageService : IImageService
+public class ImageService(IImageRepository imageRepository) : IImageService
 {
-    public Task<Result<FileStream>> GetImage(Guid id)
+    private readonly IImageRepository _imageRepository = imageRepository;
+    public async Task<Result<FileStream>> GetImage(Guid id)
     {
-        throw new NotImplementedException();
+        return await _imageRepository.GetFileStream(new Image(id));
     }
 
-    public Task<Result<ImageDto>> Upload(Stream stream)
+    public async Task<Result<ImageDto>> Upload(Stream stream)
     {
-        throw new NotImplementedException();
+        Result<Image> result = await _imageRepository.Upload(stream);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+        return Result.Ok(new ImageDto(result.Value.Guid));
     }
 }

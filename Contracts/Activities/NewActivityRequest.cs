@@ -1,6 +1,6 @@
 namespace Contracts.Activities;
 
-public record ActivityRequest(
+public record NewActivityRequest(
     string Name,
     DateTime StartingDate,
     DateTime EndingDate,

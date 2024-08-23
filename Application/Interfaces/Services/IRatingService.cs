@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Application.DTO;
 using FluentResults;
 
-namespace Application.Interfaces;
+namespace Application.Interfaces.Services;
 
 public interface IRatingService
 {
