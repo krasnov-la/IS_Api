@@ -1,33 +1,49 @@
+using Application.Errors.Common;
 using Application.Interfaces.Repositories;
 using Domain.Entities;
 using FluentResults;
+using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories;
+namespace Infrastructure.Persistance.Repositories;
 
-public class ActivityRepository : IActivityRepository
+public class ActivityRepository(DbContext db) : RepositoryBase(db), IActivityRepository
 {
-    public Task<Result> Create(Activity activity)
+    private readonly DbSet<Activity> _activities = db.Set<Activity>();
+    public async Task<Result> Create(Activity activity)
     {
-        throw new NotImplementedException();
+        _activities.Add(activity);
+        return await Save();
     }
 
-    public Task<Result> DeleteById(Guid id)
+    public async Task<Result> DeleteById(Guid id)
     {
-        throw new NotImplementedException();
+        await _activities
+            .Where(a => a.Id == id)
+            .ExecuteDeleteAsync();
+        return Result.Ok();
     }
 
-    public Task<Result<IEnumerable<Activity>>> Get(int count, int offset)
+    public async Task<Result<List<Activity>>> Get(int count, int offset)
     {
-        throw new NotImplementedException();
+        var activities = await _activities
+            .OrderBy(a => a.Start)
+            .Skip(offset)
+            .Take(count)
+            .ToListAsync();
+
+        return Result.Ok(activities);
     }
 
-    public Task<Result<Activity?>> GetById(Guid id)
+    public async Task<Result<Activity>> GetById(Guid id)
     {
-        throw new NotImplementedException();
+        var activity = await _activities.FirstOrDefaultAsync(a => a.Id == id);
+        if (activity is null) return Result.Fail(new EntityNotFoundError("Activity"));
+        return Result.Ok(activity);
     }
 
-    public Task<Result> Update(Activity activity)
+    public async Task<Result> Update(Activity activity)
     {
-        throw new NotImplementedException();
+        _activities.Update(activity);
+        return await Save();
     }
 }

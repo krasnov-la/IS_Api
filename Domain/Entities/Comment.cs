@@ -13,7 +13,7 @@ public class Comment
 
     private Comment(Admin admin, string message)
     {
-        _id = Guid.NewGuid();
+        //_id = Guid.NewGuid();
         _admin = admin;
         _message = message;
     }

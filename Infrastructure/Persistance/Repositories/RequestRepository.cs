@@ -1,39 +1,61 @@
+using Application.Errors.Common;
 using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Domain.Enums;
 using FluentResults;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories;
+namespace Infrastructure.Persistance.Repositories;
 
-public class RequestRepository : IRequestRepository
+public class RequestRepository(DbContext db) : RepositoryBase(db), IRequestRepository
 {
-    public Task<Result> Create(Request request)
+    private readonly DbSet<Request> _requests = db.Set<Request>();
+    public async Task<Result> Create(Request request)
     {
-        throw new NotImplementedException();
+        _requests.Add(request);
+        return await Save();
     }
 
-    public Task<Result> DeleteById(Guid id)
+    public async Task<Result> DeleteById(Guid id)
     {
-        throw new NotImplementedException();
+        await _requests
+            .Where(r => r.Id == id)
+            .ExecuteDeleteAsync();
+
+        return await Save();
     }
 
-    public Task<Result<List<Request>>> GetByEmail(string email, RequestStatus? status, int count, int offset)
+    public async Task<Result<List<Request>>> GetByEmail(string email, RequestStatus? status, int count, int offset)
     {
-        throw new NotImplementedException();
+        if (count < 0 || offset < 0) return Result.Fail(new PaginationError());
+
+        var query = _requests.Where(r => r.Student == new Student(email));
+        if (status is not null) query = query.Where(r => r.Status == status);
+
+        return Result.Ok(await query.Skip(offset).Take(count).ToListAsync());
     }
 
-    public Task<Result<Request>> GetById(Guid id)
+    public async Task<Result<Request>> GetById(Guid id)
     {
-        throw new NotImplementedException();
+        var request = await _requests.FirstOrDefaultAsync(r => r.Id == id);
+        if (request is null) return Result.Fail(new EntityNotFoundError("Request"));
+        return Result.Ok(request);
     }
 
-    public Task<Result<List<Request>>> GetUnscored()
+    public async Task<Result<List<Request>>> GetUnscored(int count, int offset)
     {
-        throw new NotImplementedException();
+        if (count < 0 || offset < 0) return Result.Fail(new PaginationError());
+        return Result.Ok(await _requests
+            .Where(r => r.Status == RequestStatus.InProgress)
+            .Skip(offset)
+            .Take(count)
+            .ToListAsync());
     }
 
-    public Task<Result> Update(Request request)
+    public async Task<Result> Update(Request request)
     {
-        throw new NotImplementedException();
+        _requests.Update(request);
+        return await Save();
     }
 }

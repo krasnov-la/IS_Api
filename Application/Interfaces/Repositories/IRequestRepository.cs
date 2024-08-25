@@ -10,6 +10,6 @@ public interface IRequestRepository
      Task<Result> DeleteById(Guid id);
      Task<Result<List<Request>>> GetByEmail(string email, RequestStatus? status, int count, int offset);
      Task<Result<Request>> GetById(Guid id);
-     Task<Result<List<Request>>> GetUnscored();
+     Task<Result<List<Request>>> GetUnscored(int count, int offset);
      Task<Result> Update(Request request);
 }

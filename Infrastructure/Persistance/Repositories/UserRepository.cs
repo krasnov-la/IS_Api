@@ -1,23 +1,30 @@
+using Application.Errors.Common;
 using Application.Interfaces.Repositories;
 using Domain.Entities;
 using FluentResults;
+using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories;
+namespace Infrastructure.Persistance.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(DbContext db) : RepositoryBase(db), IUserRepository
 {
-    public Task<Result> Create(User user)
+    private readonly DbSet<User> _users = db.Set<User>();
+    public async Task<Result> Create(User user)
     {
-        throw new NotImplementedException();
+        _users.Add(user);
+        return await Save();
     }
 
-    public Task<Result<User>> GetByEmail(string email)
+    public async Task<Result<User>> GetByEmail(string email)
     {
-        throw new NotImplementedException();
+        var user = await _users.FirstOrDefaultAsync(user => user.EmailAddress == email);
+        if (user is null) return Result.Fail(new EntityNotFoundError("User"));
+        return Result.Ok(user);
     }
 
-    public Task<Result> Update(User user)
+    public async Task<Result> Update(User user)
     {
-        throw new NotImplementedException();
+        _users.Update(user);
+        return await Save();
     }
 }

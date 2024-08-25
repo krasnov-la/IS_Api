@@ -12,15 +12,15 @@ public class ImagesController(IImageService imageService) : ApiController
 {
     private readonly IImageService _imageService = imageService;
 
+
     [HttpPost]
     //[Authorize]
     [Produces(typeof(ImageResponse))]
-    public async Task<IActionResult> PostNewImage([FromBody] IFormFile file)
+    public async Task<IActionResult> PostNewImage(IFormFile file)
     {
         Result<ImageDto> result = await _imageService.Upload(file.OpenReadStream());
         return ResultToResponse(result, v => new ImageResponse(v.Id));
     }
-
     [HttpGet("{id}")]
     //[Authorize]
     public async Task<IActionResult> GetImage(Guid id)

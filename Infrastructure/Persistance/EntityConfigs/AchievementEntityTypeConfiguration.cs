@@ -9,7 +9,11 @@ public class AchievementEntityTypeConfiguration
     public static void Configure(OwnedNavigationBuilder<Request, Achievement> builder)
     {
         builder.ToTable("achievements");
-        builder.HasKey(a => a.Id);
+        builder
+            .HasKey(a => a.Id);
+        builder
+            .Property(a => a.Id)
+            .ValueGeneratedOnAdd();
         builder.WithOwner().HasForeignKey("requestId");
         builder
             .Property(a => a.Admin)
