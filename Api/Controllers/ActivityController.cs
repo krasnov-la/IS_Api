@@ -3,6 +3,7 @@ using Application.DTO;
 using Application.Interfaces.Services;
 using Contracts.Activities;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -12,7 +13,7 @@ public class ActivityController(IActivityService activityService) : ApiControlle
 {
     private readonly IActivityService _activityService = activityService;
     [HttpPost]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     [Produces(typeof(ActivityFullResponse))]
     public async Task<IActionResult> NewActivity([FromBody] NewActivityRequest request)
     {
@@ -28,6 +29,7 @@ public class ActivityController(IActivityService activityService) : ApiControlle
         return ResultToResponse(result, ToFullResponse);
     }
     [HttpPatch("{id}")]
+    [Authorize("Admin")]
     [Produces(typeof(ActivityFullResponse))]
     public async Task<IActionResult> UpdateActivity(Guid id, UpdateActivityRequest request)
     {
@@ -45,13 +47,14 @@ public class ActivityController(IActivityService activityService) : ApiControlle
         return ResultToResponse(result, ToFullResponse);
     }
     [HttpGet("{id}")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     [Produces(typeof(ActivityFullResponse))]
     public async Task<IActionResult> GetById(Guid id)
     {
         Result<ActivityDto> result = await _activityService.GetById(id);
         return ResultToResponse(result, ToFullResponse);
     }
+
     [HttpGet("count/offset")]
     [Produces(typeof(List<ActivityShortResponse>))]
     public async Task<IActionResult> GetAll(int count, int offset)
@@ -61,8 +64,9 @@ public class ActivityController(IActivityService activityService) : ApiControlle
         );
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
+    
     [HttpDelete("{id}")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     public async Task<IActionResult> Delete(Guid id)
     {
         Result result = await _activityService.Delete(id);

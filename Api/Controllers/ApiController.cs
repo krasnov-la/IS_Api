@@ -7,7 +7,7 @@ namespace Api.Controllers;
 public class ApiController : ControllerBase
 {
     [NonAction]
-    private ObjectResult ToErrorResponse(List<IError> errors)
+    protected ObjectResult ToErrorResponse(List<IError> errors)
     {
         string? details = null;
         int code;

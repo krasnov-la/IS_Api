@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Application.Commands.Requests;
 using Application.DTO;
 using Application.Interfaces.Services;
@@ -6,6 +7,7 @@ using Contracts.Comments;
 using Contracts.VerificationRequests;
 using Domain.Enums;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -16,7 +18,7 @@ public class RequestController(IRequestService requestService) : ApiController
 {
     private readonly IRequestService _requestService = requestService;
     [HttpPost]
-    //[Authorize]
+    [Authorize("Student")]
     [Produces(typeof(VerificationRequestFullResponse))]
     public async Task<IActionResult> NewRequest([FromBody] NewVerificationRequestRequest request)
     {
@@ -31,16 +33,16 @@ public class RequestController(IRequestService requestService) : ApiController
     }
 
     [HttpGet("{id}")]
-    //[Authorize]
+    [Authorize("Verificated")]
     [Produces(typeof(VerificationRequestFullResponse))]
     public async Task<IActionResult> GetRequestById(Guid id)
     {
-        Result<RequestDto> result = await _requestService.GetById(id);
+        Result<RequestDto> result = await _requestService.GetById(User, id);
         return ResultToResponse(result, ToFullResponse);
     }
 
     [HttpGet("unscored/{count}/{offset}")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     [Produces(typeof(List<VerificationRequestResponse>))]
     public async Task<IActionResult> GetUnscored(int count, int offset)
     {
@@ -50,7 +52,7 @@ public class RequestController(IRequestService requestService) : ApiController
     }
 
     [HttpGet("user/{email}/{count}/{offset}")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     [Produces(typeof(List<VerificationRequestResponse>))]
     public async Task<IActionResult> GetByUser(string email, int count, int offset)
     {
@@ -60,7 +62,7 @@ public class RequestController(IRequestService requestService) : ApiController
     }
 
     [HttpGet("user/{email}/{status}/{count}/{offset}")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     [Produces(typeof(List<VerificationRequestResponse>))]
     public async Task<IActionResult> GetByUser(string email, RequestStatus status, int count, int offset)
     {
@@ -70,7 +72,7 @@ public class RequestController(IRequestService requestService) : ApiController
     }
 
     [HttpGet("self/{count}/{offset}")]
-    //[Authorize]
+    [Authorize("Student")]
     [Produces(typeof(List<VerificationRequestResponse>))]
     public async Task<IActionResult> GetSelf(int count, int offset)
     {
@@ -80,7 +82,7 @@ public class RequestController(IRequestService requestService) : ApiController
     }
 
     [HttpGet("self/{requestStatus}/{count}/{offset}")]
-    //[Authorize]
+    [Authorize("Student")]
     [Produces(typeof(List<VerificationRequestResponse>))]
     public async Task<IActionResult> GetSelfWithStatus(RequestStatus requestStatus, int count, int offset)
     {
@@ -90,13 +92,14 @@ public class RequestController(IRequestService requestService) : ApiController
     }
 
     [HttpDelete("{id}")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     public async Task<IActionResult> DeleteById(Guid id)
     {
         Result result = await _requestService.DeleteById(id);
         return ResultToResponse(result);
     }
     [HttpPost("{requestId}/reject")]
+    [Authorize("Admin")]
     public async Task<IActionResult> Reject([FromRoute] Guid requestId, [FromBody] RejectionRequest request)
     {
         Result result = await _requestService.Reject(
@@ -108,7 +111,7 @@ public class RequestController(IRequestService requestService) : ApiController
         return ResultToResponse(result);
     }
     [HttpPost("{requestId}/approve")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     public async Task<IActionResult> Approve([FromRoute] Guid requestId, [FromBody] ApprovalRequest request)
     {
         Result result = await _requestService.Approve(
@@ -121,7 +124,7 @@ public class RequestController(IRequestService requestService) : ApiController
         return ResultToResponse(result);
     }
     [HttpPost("{requestId}/revoke")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     public async Task<IActionResult> Revoke([FromRoute] Guid requestId)
     {
         Result result = await _requestService.Revoke(requestId);

@@ -2,6 +2,7 @@ using Application.DTO;
 using Application.Interfaces.Services;
 using Contracts.Images;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -14,7 +15,7 @@ public class ImagesController(IImageService imageService) : ApiController
 
 
     [HttpPost]
-    //[Authorize]
+    [Authorize]
     [Produces(typeof(ImageResponse))]
     public async Task<IActionResult> PostNewImage(IFormFile file)
     {
@@ -22,7 +23,7 @@ public class ImagesController(IImageService imageService) : ApiController
         return ResultToResponse(result, v => new ImageResponse(v.Id));
     }
     [HttpGet("{id}")]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> GetImage(Guid id)
     {
         Result<FileStream> result = await _imageService.GetImage(id);
