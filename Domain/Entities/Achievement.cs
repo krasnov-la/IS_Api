@@ -8,7 +8,7 @@ public record Achievement
 
     public Achievement(Admin admin, float score)
     {
-        Id = Guid.NewGuid();
+        //Id = Guid.NewGuid();
         Admin = admin;
         Score = score;
     }

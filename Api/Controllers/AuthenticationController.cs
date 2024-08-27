@@ -11,6 +11,6 @@ public class AuthenticationController(IAuthenticationService authenticationServi
     [HttpGet("login/{oAuth}")]
     public async Task<IActionResult> Login(string oAuth)
     {
-        return Ok(await _authService.Login(oAuth));
+        return ResultToResponse(await _authService.Login(oAuth), r => r);
     }
 }

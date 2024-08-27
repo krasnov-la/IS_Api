@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Application.Commands.Requests;
 using Application.DTO;
+using Application.Errors;
 using Application.Errors.Common;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
@@ -22,9 +23,11 @@ public class RequestService(IRequestRepository requestRepository, IImageReposito
         if (result.IsFailed) return Result.Fail(result.Errors);
         var request = result.Value;
 
-        request.Approve(
+        Result approval_res = request.Approve(
             new Admin(ExtractEmail(command.User)),
             command.Score);
+
+        if (approval_res.IsFailed) return Result.Fail(new StatusChangeError());
 
         return await _requestRepository.Update(request);
     }
@@ -85,7 +88,7 @@ public class RequestService(IRequestRepository requestRepository, IImageReposito
 
     public async Task<Result<List<RequestDto>>> GetUnscored(GetUnscoredCommand getUnscoredCommand)
     {
-        Result<List<Request>> result = await _requestRepository.GetUnscored();
+        Result<List<Request>> result = await _requestRepository.GetUnscored(getUnscoredCommand.Count, getUnscoredCommand.Offset);
         if (result.IsFailed) return Result.Fail(result.Errors);
         return Result.Ok(result.Value.Select(ToRequestDto).ToList());
     }
@@ -97,9 +100,11 @@ public class RequestService(IRequestRepository requestRepository, IImageReposito
         if (result.IsFailed) return Result.Fail(result.Errors);
         var request = result.Value;
 
-        request.Reject(
+        Result rejection_result = request.Reject(
             new Admin(ExtractEmail(command.User)),
             command.Message);
+
+        if (rejection_result.IsFailed) return Result.Fail(new StatusChangeError());
 
         return await _requestRepository.Update(request);
     }

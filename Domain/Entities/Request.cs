@@ -31,7 +31,17 @@ public class Request
         _images = images;
         _eventName = eventName;
         _description = description;
-        _createdAt = DateTime.Now;
+        _createdAt = DateTime.UtcNow;
+        _status = RequestStatus.InProgress;
+    }
+    private Request(Student student, string eventName, string description)
+    {
+        _id = Guid.NewGuid();
+        _student = student;
+        _images = [];
+        _eventName = eventName;
+        _description = description;
+        _createdAt = DateTime.UtcNow;
         _status = RequestStatus.InProgress;
     }
     public static Request Create(Student student, string eventName, string description,  List<Image> images)

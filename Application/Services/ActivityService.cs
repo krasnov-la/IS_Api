@@ -38,17 +38,15 @@ public class ActivityService(IActivityRepository activityRepo, IImageRepository 
 
     public async Task<Result<List<ActivityDto>>> GetActivities(GetActivitiesCommand command)
     {
-        Result<IEnumerable<Activity>> result = await _activityRepo.Get(command.Count, command.Offset);
+        Result<List<Activity>> result = await _activityRepo.Get(command.Count, command.Offset);
         if (result.IsFailed) return Result.Fail(result.Errors);
         return Result.Ok(result.Value.Select(ToDto).ToList());
     }
 
     public async Task<Result<ActivityDto>> GetById(Guid id)
     {
-        Result<Activity?> result = await _activityRepo.GetById(id);
+        Result<Activity> result = await _activityRepo.GetById(id);
         if (result.IsFailed) return Result.Fail(result.Errors);
-        if (result.Value is null) return Result.Fail(
-            new EntityNotFoundError("Activity"));
         return Result.Ok(ToDto(result.Value));
     }
 
@@ -56,11 +54,9 @@ public class ActivityService(IActivityRepository activityRepo, IImageRepository 
     {
         if (command.Preview is not null && !_imageRepository.ValidateImage(new Guid(command.Preview)))
             return Result.Fail(new ImageInvalidError(new Guid(command.Preview)));
-        Result<Activity?> result = await _activityRepo.GetById(command.Id);
+        Result<Activity> result = await _activityRepo.GetById(command.Id);
         if (result.IsFailed) return Result.Fail(result.Errors);
-        if (result.Value is null) return Result.Fail(
-            new EntityNotFoundError("Activity"));
-
+        
         var activity = result.Value;
 
         activity.Update(

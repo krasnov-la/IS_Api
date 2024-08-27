@@ -14,7 +14,7 @@ public class User
     private string? _course;
     private string? _bannedBy;
 
-    public Role _role = Role.Unverified;
+    private Role _role = Role.Unverified;
 
     public string? AvatarImgLink => _avatarImgLink;
     public string? Nickname => _nickname;
