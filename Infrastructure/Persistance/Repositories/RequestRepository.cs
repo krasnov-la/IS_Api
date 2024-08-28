@@ -1,4 +1,4 @@
-using Application.Errors.Common;
+using Application.Errors;
 using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Domain.Enums;

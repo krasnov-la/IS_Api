@@ -12,7 +12,7 @@ public interface IRequestService
     Task<Result<RequestDto>> Create(CreateRequestCommand command);
     Task<Result> DeleteById(Guid id);
     Task<Result<List<RequestDto>>> GetByEmail(GetRequestsByEmailCommand getRequestsByEmailCommand);
-    Task<Result<RequestDto>> GetById(Guid id);
+    Task<Result<RequestDto>> GetById(ClaimsPrincipal user, Guid id);
     Task<Result<List<RequestDto>>> GetSelf(GetSelfRequestsCommand getSelfRequestsCommand);
     Task<Result<List<RequestDto>>> GetUnscored(GetUnscoredCommand getUnscoredCommand);
     Task<Result> Reject(RejectRequestCommand command);

@@ -1,7 +1,6 @@
-using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Errors.Common;
+namespace Application.Errors;
 
-public class ImageInvalidError(Guid imageId) : 
+public class ImageInvalidError(Guid imageId) :
     ErrorBase(StatusCodes.Status400BadRequest, $"Image {imageId} does not exist");

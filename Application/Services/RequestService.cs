@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Application.Commands.Requests;
 using Application.DTO;
 using Application.Errors;
-using Application.Errors.Common;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;
@@ -31,7 +30,7 @@ public class RequestService(IRequestRepository requestRepository, IImageReposito
 
         return await _requestRepository.Update(request);
     }
-    //Authorize non admin
+    
     public async Task<Result<RequestDto>> Create(CreateRequestCommand command)
     {
         var failed = command.ImageIds.Where(i => !_imageRepository.ValidateImage(i));
@@ -67,10 +66,13 @@ public class RequestService(IRequestRepository requestRepository, IImageReposito
         return Result.Ok(result.Value.Select(ToRequestDto).ToList());
     }
 
-    public async Task<Result<RequestDto>> GetById(Guid id)
+    public async Task<Result<RequestDto>> GetById(ClaimsPrincipal user, Guid id)
     {
         Result<Request> result = await _requestRepository.GetById(id);
         if (result.IsFailed) return Result.Fail(result.Errors);
+        if (!user.IsInRole(Role.Admin.ToString()) && 
+            user.FindFirstValue(ClaimTypes.Email) != result.Value.Student.EmailAddress) 
+            return Result.Fail(new UserNotAuthorizedError());
         return Result.Ok(ToRequestDto(result.Value));
     }
 

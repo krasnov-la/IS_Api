@@ -1,9 +1,10 @@
 
 using Application.DTO;
+using FluentResults;
 
 namespace Application.Interfaces.Infrastructure;
 
 public interface IOAuthHandler
 {
-    Task<YandexUserData> GetUserData(string oAuth);
+    Task<Result<YandexUserData>> GetUserData(string oAuth);
 }
