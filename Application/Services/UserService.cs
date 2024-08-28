@@ -1,6 +1,6 @@
 using Application.Commands.Users;
 using Application.DTO;
-using Application.Errors.Common;
+using Application.Errors;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;

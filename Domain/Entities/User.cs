@@ -33,13 +33,13 @@ public class User
     }
 
     public static User Create(
-        string avatarImgLink,
-        string emailAddress
+        string emailAddress,
+        string avatarImgLink
     )
     {
         return new User(
-            avatarImgLink,
-            emailAddress
+            emailAddress,
+            avatarImgLink
         );
     }
 

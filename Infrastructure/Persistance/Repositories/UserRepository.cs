@@ -1,4 +1,4 @@
-using Application.Errors.Common;
+using Application.Errors;
 using Application.Interfaces.Repositories;
 using Domain.Entities;
 using FluentResults;
@@ -18,7 +18,7 @@ public class UserRepository(DbContext db) : RepositoryBase(db), IUserRepository
     public async Task<Result<User>> GetByEmail(string email)
     {
         var user = await _users.FirstOrDefaultAsync(user => user.EmailAddress == email);
-        if (user is null) return Result.Fail(new EntityNotFoundError("User"));
+        if (user is null) return Result.Fail(new UserNotFoundError());
         return Result.Ok(user);
     }
 

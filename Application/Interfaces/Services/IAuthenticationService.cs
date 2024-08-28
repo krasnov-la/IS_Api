@@ -1,8 +1,10 @@
 
 
+using FluentResults;
+
 namespace Application.Interfaces.Services;
 
 public interface IAuthenticationService
 {
-    Task<string> Login(string oAuth);
+    Task<Result<string>> Login(string oAuth);
 }

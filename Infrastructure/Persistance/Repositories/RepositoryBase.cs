@@ -1,4 +1,4 @@
-using Application.Errors.Common;
+using Application.Errors;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,4 @@
 using FluentResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Errors;
 

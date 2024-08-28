@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Application.Commands.Activities;
 using Application.DTO;
-using Application.Errors.Common;
+using Application.Errors;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;
