@@ -4,6 +4,15 @@ using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(o => o.AddPolicy(
+    name: "Default",
+    policy => policy
+        .WithOrigins(builder.Configuration["AllowedOrigins"])
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+));
+
 builder.Services.AddControllers();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -20,6 +29,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("Default");
 
 app.UseAuthentication();
 
