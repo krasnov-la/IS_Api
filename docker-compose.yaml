@@ -1,0 +1,25 @@
+services:
+  api: 
+    build: 
+      dockerfile: Dockerfile.api
+      context: .
+      secrets: 
+        - dotnet_secrets
+    ports:
+      - "5001:8080"
+    
+  postgres:
+    build: Database/
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    secrets:
+      - db_password  
+    environment:
+      POSTGRES_PASSWORD : /run/secrets/db_password
+    
+
+secrets:
+  dotnet_secrets:
+    file: ./dotnet_secrets.json
+  db_password:
+    file: Database/dbpassword.txt

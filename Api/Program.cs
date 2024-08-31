@@ -6,11 +6,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(o => o.AddPolicy(
     name: "Default",
-    policy => policy
-        .WithOrigins(builder.Configuration["AllowedOrigins"])
+    policy => 
+    {
+        var origins = builder.Configuration.GetSection("AllowedOrigins");
+        policy
+        .WithOrigins(
+            builder
+            .Configuration
+            .GetSection("AllowedOrigins")
+            .GetChildren()
+            .Select(c => c.Value ?? throw new ArgumentException("Allowed origin cannot be null"))
+            .ToArray())
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .AllowCredentials()
+        .AllowCredentials();
+    }
 ));
 
 builder.Services.AddControllers();

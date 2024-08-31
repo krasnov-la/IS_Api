@@ -1,0 +1,8 @@
+.vscode
+**/bin
+**/obj
+secrets.json
+.git
+.gitignore
+Dockerfile
+docker-compose.yaml

@@ -3,6 +3,8 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+dotnet_secrets.json
+dbpassword.txt
 .vscode
 
 # dotenv files
