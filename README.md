@@ -39,9 +39,9 @@ ASP.NET апи, разработанное с использованием пр�
    
     2.1 `dotnet user-secrets init --project Api\`
     
-    2.2 Linux / MacOS : `cat ./dotnet_secrets.json | dotnet user-secrets set`
+    2.2 Linux / MacOS : `cat ./dotnet_secrets.json | dotnet user-secrets set --project Api\`
 
-    2.3 Windows : `type ./dotnet_secrets.json | dotnet user-secrets set`
+    2.3 Windows : `type ./dotnet_secrets.json | dotnet user-secrets set --project Api\`
 
 4. Выполнить `dotnet ef database update`
    
