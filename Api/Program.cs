@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Application;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,11 +33,10 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI(o => {
+    o.DocumentTitle = "IS_Api";
+});
 
 app.UseHttpsRedirection();
 

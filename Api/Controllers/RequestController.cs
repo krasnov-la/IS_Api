@@ -5,6 +5,7 @@ using Application.Interfaces.Services;
 using Contracts.Achievements;
 using Contracts.Comments;
 using Contracts.VerificationRequests;
+using Domain.Entities;
 using Domain.Enums;
 using FluentResults;
 using Microsoft.AspNetCore.Authorization;
@@ -71,6 +72,15 @@ public class RequestController(IRequestService requestService) : ApiController
         return ResultToResponse(result, v => v.Select(ToShortResponse));
     }
 
+    [HttpGet("approved/user/{email}/{count}/{offset}")]
+    [Produces(typeof(List<VerificationRequestResponse>))]
+    public async Task<IActionResult> GetApprovedByUser(string email, int count, int offset)
+    {
+        Result<List<RequestDto>> result = await _requestService.GetByEmail(
+            new GetRequestsByEmailCommand(email, count, offset, RequestStatus.Approved));
+        return ResultToResponse(result, v => v.Select(ToShortResponse));
+    }
+
     [HttpGet("self/{count}/{offset}")]
     [Authorize("Student")]
     [Produces(typeof(List<VerificationRequestResponse>))]
@@ -130,6 +140,7 @@ public class RequestController(IRequestService requestService) : ApiController
         Result result = await _requestService.Revoke(requestId);
         return ResultToResponse(result);
     }
+
     [NonAction]
     private static VerificationRequestResponse ToShortResponse(RequestDto dto)
     {
@@ -138,7 +149,10 @@ public class RequestController(IRequestService requestService) : ApiController
             OwnerLogin : dto.OwnerLogin,
             EventName : dto.EventName,
             CreationDatetime : dto.CreationDatetime,
-            Status : dto.Status);
+            Status : dto.Status,
+            Achievement: dto.Achievement is not null ? ToAchievementShortResponse(dto.Achievement) : null,
+            Comment: dto.Comment is not null ? ToCommentShortResponse(dto.Comment) : null
+            );
     }
 
     [NonAction]
@@ -155,7 +169,13 @@ public class RequestController(IRequestService requestService) : ApiController
             Comment: dto.Comment is not null ? ToCommentFullResponse(dto.Comment) : null,
             ImageIds: dto.ImageIds);
     }
-
+    [NonAction]
+    private static CommentShortResponse ToCommentShortResponse(CommentDto dto)
+    {
+        return new(
+            dto.CommentText
+        );
+    }
     [NonAction]
     private static CommentFullResponse ToCommentFullResponse(CommentDto dto)
     {
@@ -165,7 +185,13 @@ public class RequestController(IRequestService requestService) : ApiController
             CommentedByAdmin: dto.CommentedByAdmin
         );
     }
-
+    [NonAction]
+    private static AchievementShortResponse ToAchievementShortResponse(AchievementDto dto)
+    {
+        return new(
+            dto.Score
+        );
+    }
     [NonAction]
     private static AchievementDetailedResponse ToAchievementFullResponse(AchievementDto dto)
     {

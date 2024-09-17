@@ -7,6 +7,9 @@ dotnet_secrets.json
 dbpassword.txt
 .vscode
 
+# postgres volume
+/postgres-data
+
 # dotenv files
 .env
 

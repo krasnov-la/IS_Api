@@ -4,6 +4,7 @@ using Application.Interfaces.Services;
 using Contracts.Users;
 using Domain.Enums;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -19,10 +20,9 @@ public class UserController(IUserService userService) : ApiController
         Result<UserDto> result = await _userService.GetByMail(email);
         return ResultToResponse(result, ToShortResponse);
     }
-    //TODO guest page
 
     [HttpGet("{email}/full")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     [Produces(typeof(UserFullResponse))]
     public async Task<IActionResult> GetByMailFull(string email)
     {
@@ -31,7 +31,7 @@ public class UserController(IUserService userService) : ApiController
     }
 
     [HttpPost("{email}/verify/{role}")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     public async Task<IActionResult> Verify(string email, Role role)
     {
         Result result = await _userService.Verify(
@@ -40,7 +40,7 @@ public class UserController(IUserService userService) : ApiController
     }
 
     [HttpPatch("update-personal-info")]
-    //[Authorize]
+    [Authorize]
     [Produces(typeof(UserFullResponse))]
     public async Task<IActionResult> UpdateInfo([FromBody] UserUpdateRequest request)
     {
@@ -57,14 +57,14 @@ public class UserController(IUserService userService) : ApiController
     }
 
     [HttpPost("{email}/ban")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     public async Task<IActionResult> Ban(string email)
     {
         Result result = await _userService.Ban(new BanUserCommand(HttpContext.User, email));
         return ResultToResponse(result);
     }
     [HttpPost("{email}/unban")]
-    //[Authorize] admin only
+    [Authorize("Admin")]
     public async Task<IActionResult> Unban(string email)
     {
         Result result = await _userService.Unban(new BanUserCommand(HttpContext.User, email));

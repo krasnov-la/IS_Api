@@ -1,3 +1,7 @@
+using System.Text.Json.Serialization;
+using Contracts.Achievements;
+using Contracts.Comments;
+
 namespace Contracts.VerificationRequests;
 
 public record VerificationRequestResponse(
@@ -5,5 +9,9 @@ public record VerificationRequestResponse(
     string OwnerLogin,
     string EventName,
     DateTime CreationDatetime,
-    string Status
+    string Status,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    AchievementShortResponse? Achievement,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    CommentShortResponse? Comment
 );

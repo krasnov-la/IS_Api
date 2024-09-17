@@ -5,6 +5,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("auth")]
+[Produces(typeof(string))]
 public class AuthenticationController(IAuthenticationService authenticationService) : ApiController
 {
     private readonly IAuthenticationService _authService = authenticationService;
