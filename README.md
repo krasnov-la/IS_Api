@@ -36,10 +36,13 @@ ASP.NET апи, разработанное с использованием пр�
 1. Добавить файл `dotnet_secrets.json` как при развертке в контейнере, с соответствующей строкой подключения БД. 
 
 2. Инициализировать и заполнить хранилище секретов dotnet
-2.1 `dotnet user-secrets init --project Api\`
-2.2 Linux / MacOS : `cat ./dotnet_secrets.json | dotnet user-secrets set`
-2.3 Windows : `type ./dotnet_secrets.json | dotnet user-secrets set`
+   
+    2.1 `dotnet user-secrets init --project Api\`
+    
+    2.2 Linux / MacOS : `cat ./dotnet_secrets.json | dotnet user-secrets set`
 
-3. Выполнить `dotnet ef database update`
+    2.3 Windows : `type ./dotnet_secrets.json | dotnet user-secrets set`
+
+4. Выполнить `dotnet ef database update`
    
 5. Выполнить `dotnet run`, api будет работать на 5114 порте
