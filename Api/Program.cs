@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (!builder.Environment.IsDevelopment())
+    builder.Configuration.AddJsonFile("secrets.json", false);
+
 builder.Services.AddCors(o => o.AddPolicy(
     name: "Default",
     policy => 
