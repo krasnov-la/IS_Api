@@ -13,7 +13,6 @@ public class User
     private string? _middleName;
     private string? _course;
     private string? _bannedBy;
-
     private Role _role = Role.Unverified;
 
     public string? AvatarImgLink => _avatarImgLink;

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ISDBContext))]
-    [Migration("20240827103001_Init")]
+    [Migration("20240918235032_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -124,6 +124,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("character varying(32)");
 
                     b.Property<string>("Nickname")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 

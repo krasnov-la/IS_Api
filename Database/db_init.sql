@@ -26,6 +26,7 @@ CREATE TABLE users_info (
     "MiddleName" character varying(32),
     "Course" character varying(32),
     "BannedBy" character varying(128),
+    "Role" character varying(32) NOT NULL,
     CONSTRAINT "PK_users_info" PRIMARY KEY ("EmailAddress")
 );
 
@@ -71,7 +72,7 @@ CREATE UNIQUE INDEX "IX_comments_requestId" ON comments ("requestId");
 CREATE INDEX "IX_images_RequestId" ON images ("RequestId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20240827103001_Init', '8.0.4');
+VALUES ('20240918235032_Init', '8.0.4');
 
 COMMIT;
 

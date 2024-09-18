@@ -39,7 +39,8 @@ namespace Infrastructure.Migrations
                     LastName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
                     MiddleName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
                     Course = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
-                    BannedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true)
+                    BannedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    Role = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false)
                 },
                 constraints: table =>
                 {

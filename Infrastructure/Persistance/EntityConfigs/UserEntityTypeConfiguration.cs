@@ -36,5 +36,9 @@ public class UserEntityTypeConfiguration
         builder
             .Property(u => u.BannedBy)
             .HasMaxLength(128);
+        builder
+            .Property(u => u.Role)
+            .HasConversion<string>()
+            .HasMaxLength(32);
     }
 }
