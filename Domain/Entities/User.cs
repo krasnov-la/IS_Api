@@ -5,8 +5,8 @@ namespace Domain.Entities;
 
 public class User
 {
-    private string? _avatarImgLink;
-    private string? _nickname;
+    private string _avatarImgLink;
+    private string _nickname;
     private string _emailAddress;
     private string? _firstName;
     private string? _lastName;
@@ -15,8 +15,8 @@ public class User
     private string? _bannedBy;
     private Role _role = Role.Unverified;
 
-    public string? AvatarImgLink => _avatarImgLink;
-    public string? Nickname => _nickname;
+    public string AvatarImgLink => _avatarImgLink;
+    public string Nickname => _nickname;
     public string EmailAddress => _emailAddress;
     public string? FirstName => _firstName;
     public string? LastName => _lastName;
@@ -29,6 +29,7 @@ public class User
     {
         _emailAddress = emailAddress;
         _avatarImgLink = avatarImgLink;
+        _nickname = emailAddress.Split("@dvfu")[0];
     }
 
     public static User Create(
@@ -42,6 +43,11 @@ public class User
         );
     }
 
+    public void UpdateImage(string newImage)
+    {
+        _avatarImgLink = newImage;
+    }
+    
     public void Update(
             string? nickname,
             string? firstName,
@@ -49,11 +55,16 @@ public class User
             string? middleName,
             string? course)
         {
-            _nickname = nickname;
-            _firstName = firstName;
-            _lastName = lastName;
-            _middleName = middleName;
-            _course = course;
+            if (nickname is not null)
+                _nickname = nickname;
+            if (firstName is not null)    
+                _firstName = firstName;
+            if (lastName is not null)
+                _lastName = lastName;
+            if (middleName is not null)
+                _middleName = middleName;
+            if (course is not null)
+                _course = course;
         }
 
     public Result Verify(Role role)

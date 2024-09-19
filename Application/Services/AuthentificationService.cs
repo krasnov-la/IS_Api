@@ -34,6 +34,12 @@ public class AuthenticationService(
             user = userFetchResult.Value;
         }
 
+        if (user.AvatarImgLink != userData.AvatarId)
+        {
+            user.UpdateImage(userData.AvatarId);
+            await _userRepository.Update(user);
+        }
+
         return _tokenIssuer.IssueToken(user);
     }
 }
