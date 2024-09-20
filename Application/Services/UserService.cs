@@ -41,7 +41,7 @@ public class UserService(IUserRepository userRepository) : ServiceBase, IUserSer
         return await _userRepository.Update(user);
     }
 
-    public async Task<Result<UserDto>> Update(UpdateUserCommand command)
+     public async Task<Result<UserDto>> Update(UpdateUserCommand command)
     {
         Result<User> result = await _userRepository.GetByEmail(ExtractEmail(command.User));
         if (result.IsFailed) return Result.Fail(result.Errors);
@@ -84,5 +84,17 @@ public class UserService(IUserRepository userRepository) : ServiceBase, IUserSer
             user.Course,
             user.BannedBy
         );
+    }
+
+    public async Task<Result> ElevateRole(string email)
+    {
+        Result<User> result = await _userRepository.GetByEmail(email);
+        if (result.IsFailed) return Result.Fail(result.Errors);
+
+        var user = result.Value;
+
+        user.MakeAdmin();
+
+        return await _userRepository.Update(user);
     }
 }

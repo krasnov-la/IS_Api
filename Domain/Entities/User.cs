@@ -27,9 +27,12 @@ public class User
 
     private User(string emailAddress, string avatarImgLink)
     {
+        var split = emailAddress.Split("@");
         _emailAddress = emailAddress;
         _avatarImgLink = avatarImgLink;
-        _nickname = emailAddress.Split("@dvfu")[0];
+        _nickname = split[0];
+        if (split.Contains("dvfu.ru"))
+            _role = Role.Student;
     }
 
     public static User Create(
@@ -75,6 +78,13 @@ public class User
             return Result.Fail("Data insufficient");
         if (_role == Role.Banned) return Result.Fail("User banned");
         _role = role;
+        return Result.Ok();
+    }
+
+    public Result MakeAdmin()
+    {
+        if (_role == Role.Banned) return Result.Fail("User banned");
+        _role = Role.Admin;
         return Result.Ok();
     }
 

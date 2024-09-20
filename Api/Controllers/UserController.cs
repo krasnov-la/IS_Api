@@ -30,12 +30,20 @@ public class UserController(IUserService userService) : ApiController
         return ResultToResponse(result, ToFullResponse);
     }
 
-    [HttpPost("{email}/verify/{role}")]
+    // [HttpPost("{email}/verify/{role}")]
+    // [Authorize("Admin")]
+    // public async Task<IActionResult> Verify(string email, Role role)
+    // {
+    //     Result result = await _userService.Verify(
+    //         new UserVerificationCommand(email, role));
+    //     return ResultToResponse(result);
+    // }
+
+    [HttpPost("{email}/make-admin")]
     [Authorize("Admin")]
-    public async Task<IActionResult> Verify(string email, Role role)
+    public async Task<IActionResult> ElevateRole(string email)
     {
-        Result result = await _userService.Verify(
-            new UserVerificationCommand(email, role));
+        Result result = await _userService.ElevateRole(email);
         return ResultToResponse(result);
     }
 
