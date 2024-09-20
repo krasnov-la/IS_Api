@@ -15,27 +15,36 @@ public class RatingController(IRatingService ratingService) : ApiController
 
     [HttpGet("personal")]
     [Authorize("Student")]
-    [Produces(typeof(RatingResponse))]
+    [Produces(typeof(GlobalRatingResponse))]
     public async Task<IActionResult> PersonalRating()
     {
         Result<RatingDto> result = await _ratingService.GetPersonalRating(HttpContext.User);
-        return ResultToResponse(result, ToResponse);
+        return ResultToResponse(result, ToPersonalResponse);
     }
 
-    [HttpGet("global")]
-    [Produces(typeof(List<RatingResponse>))]
-    public async Task<IActionResult> GlobalRating()
+    [HttpGet("global/{count}/{offset}")]
+    [Produces(typeof(List<GlobalRatingResponse>))]
+    public async Task<IActionResult> GlobalRating(int count, int offset)
     {
-        Result<List<RatingDto>> result = await _ratingService.GetGlobalRating();
-        return ResultToResponse(result, v => v.Select(ToResponse));
+        Result<List<RatingDto>> result = await _ratingService.GetGlobalRating(count, offset);
+        return ResultToResponse(result, v => v.Select(ToGlobalResponse));
     }
     [NonAction]
-    private static RatingResponse ToResponse(RatingDto dto)
+    private static GlobalRatingResponse ToGlobalResponse(RatingDto dto)
     {
-        return new RatingResponse(
+        return new GlobalRatingResponse(
             Place: dto.Place,
             Nickname: dto.Nickname,
             EmailAddress: dto.EmailAddress,
+            Score: dto.Score
+        );
+    }
+
+    [NonAction]
+    private static PersonalRatingResponse ToPersonalResponse(RatingDto dto)
+    {
+        return new PersonalRatingResponse(
+            Place: dto.Place,
             Score: dto.Score
         );
     }

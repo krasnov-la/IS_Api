@@ -1,6 +1,6 @@
 namespace Contracts.Ratings;
 
-public record RatingResponse(
+public record GlobalRatingResponse(
     int Place,
     string Nickname,
     string EmailAddress,

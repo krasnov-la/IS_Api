@@ -6,6 +6,6 @@ namespace Application.Interfaces.Services;
 
 public interface IRatingService
 {
-    Task<Result<List<RatingDto>>> GetGlobalRating();
+    Task<Result<List<RatingDto>>> GetGlobalRating(int count, int offset);
     Task<Result<RatingDto>> GetPersonalRating(ClaimsPrincipal user);
 }

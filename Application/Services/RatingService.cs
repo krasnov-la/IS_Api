@@ -10,9 +10,9 @@ namespace Application.Services;
 public class RatingService(IRatingRepository ratingRepository) : ServiceBase, IRatingService
 {
     private readonly IRatingRepository _ratingRepository = ratingRepository;
-    public async Task<Result<List<RatingDto>>> GetGlobalRating()
+    public async Task<Result<List<RatingDto>>> GetGlobalRating(int count, int offset)
     {
-        return await _ratingRepository.GetGlobalRating();
+        return await _ratingRepository.GetGlobalRating(count, offset);
     }
 
     public async Task<Result<RatingDto>> GetPersonalRating(ClaimsPrincipal user)

@@ -8,6 +8,7 @@ public record VerificationRequestResponse(
     Guid Id,
     string OwnerLogin,
     string EventName,
+    string Description,
     DateTime CreationDatetime,
     string Status,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

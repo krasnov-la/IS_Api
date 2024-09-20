@@ -148,6 +148,7 @@ public class RequestController(IRequestService requestService) : ApiController
             Id : dto.Id,
             OwnerLogin : dto.OwnerLogin,
             EventName : dto.EventName,
+            Description: dto.Description,
             CreationDatetime : dto.CreationDatetime,
             Status : dto.Status,
             Achievement: dto.Achievement is not null ? ToAchievementShortResponse(dto.Achievement) : null,
