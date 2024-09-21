@@ -1,4 +1,5 @@
 using Application.Interfaces.Services;
+using Contracts.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -12,6 +13,10 @@ public class AuthenticationController(IAuthenticationService authenticationServi
     [HttpGet("login/{oAuth}")]
     public async Task<IActionResult> Login(string oAuth)
     {
-        return ResultToResponse(await _authService.Login(oAuth), r => r);
+        return ResultToResponse(await _authService.Login(oAuth), 
+            d => new AuthenticationResponse(
+                d.Email,
+                d.AccessToken
+            ));
     }
 }

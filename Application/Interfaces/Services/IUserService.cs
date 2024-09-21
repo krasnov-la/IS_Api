@@ -13,5 +13,5 @@ public interface IUserService
     Task<Result<UserDto>> GetByMail(string email);
     Task<Result> Unban(BanUserCommand command);
     Task<Result<UserDto>> Update(UpdateUserCommand command);
-    Task<Result> Verify(UserVerificationCommand command);
+    //Task<Result> Verify(UserVerificationCommand command);
 }

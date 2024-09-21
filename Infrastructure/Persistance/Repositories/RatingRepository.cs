@@ -19,7 +19,7 @@ public class RatingRepository(DbContext db) : IRatingRepository
     public async Task<Result<RatingDto>> GetPersonalRating(Student student)
     {
         var personal_rating = (await GetGlobal()).FirstOrDefault(r => r.EmailAddress == student.EmailAddress);
-        personal_rating ??= new RatingDto(0, "", student.EmailAddress, 0);
+        personal_rating ??= new RatingDto(0, "", student.EmailAddress, "", 0);
         return Result.Ok(personal_rating);
     }
 
@@ -31,7 +31,7 @@ public class RatingRepository(DbContext db) : IRatingRepository
             .Select(g => new
             {
                 g.Key.EmailAddress,
-                Total = g.Sum(r => r.Achievement.Score)
+                Total = g.Sum(r => r.Achievement!.Score)
             })
             .OrderByDescending(r => r.Total)
             .ToListAsync())
@@ -42,9 +42,10 @@ public class RatingRepository(DbContext db) : IRatingRepository
                 {
                     u.Nickname,
                     u.EmailAddress,
+                    u.AvatarImgLink,
                     r.Total
                 })
-            .Select((r, i) => new RatingDto(i + 1, r.Nickname, r.EmailAddress, r.Total))
+            .Select((r, i) => new RatingDto(i + 1, r.Nickname, r.EmailAddress, r.AvatarImgLink, r.Total))
             .ToList();
     }
 
@@ -56,7 +57,7 @@ public class RatingRepository(DbContext db) : IRatingRepository
             .Select(g => new
             {
                 g.Key.EmailAddress,
-                Total = g.Sum(r => r.Achievement.Score)
+                Total = g.Sum(r => r.Achievement!.Score)
             })
             .OrderByDescending(r => r.Total)
             .Skip(offset)
@@ -69,9 +70,10 @@ public class RatingRepository(DbContext db) : IRatingRepository
                 {
                     u.Nickname,
                     u.EmailAddress,
+                    u.AvatarImgLink,
                     r.Total
                 })
-            .Select((r, i) => new RatingDto(i + 1, r.Nickname, r.EmailAddress, r.Total))
+            .Select((r, i) => new RatingDto(i + 1, r.Nickname, r.EmailAddress, r.AvatarImgLink, r.Total))
             .ToList();
     } 
 }

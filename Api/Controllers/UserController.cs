@@ -55,9 +55,6 @@ public class UserController(IUserService userService) : ApiController
         Result<UserDto> result = await _userService.Update(
             new UpdateUserCommand(
                 HttpContext.User,
-                request.FirstName,
-                request.MiddleName,
-                request.LastName,
                 request.Nickname,
                 request.Course
         ));
@@ -101,6 +98,7 @@ public class UserController(IUserService userService) : ApiController
         return new UserShortResponse(
             AvatarImgLink: dto.AvatarImgLink,
             Nickname: dto.Nickname,
+            FullName: dto.LastName + " " + dto.FirstName + (dto.MiddleName is null ? "" : " " + dto.MiddleName),
             EmailAddress: dto.EmailAddress,
             Role: dto.Role,
             Course: dto.Course

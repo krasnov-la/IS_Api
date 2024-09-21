@@ -36,6 +36,7 @@ public class RatingController(IRatingService ratingService) : ApiController
             Place: dto.Place,
             Nickname: dto.Nickname,
             EmailAddress: dto.EmailAddress,
+            AvatarImgLink: dto.AvatarImgLink,
             Score: dto.Score
         );
     }

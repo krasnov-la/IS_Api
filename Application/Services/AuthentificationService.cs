@@ -16,7 +16,7 @@ public class AuthenticationService(
     private readonly ITokenIssuer _tokenIssuer = tokenIssuer;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IOAuthHandler _oAuth = oAuth;
-    public async Task<Result<string>> Login(string oAuth)
+    public async Task<Result<AuthenticationDto>> Login(string oAuth)
     {
         Result<YandexUserData> oauthResult = await _oAuth.GetUserData(oAuth);
         if (oauthResult.IsFailed) return Result.Fail(oauthResult.Errors);
@@ -26,7 +26,9 @@ public class AuthenticationService(
             
         if (userFetchResult.HasError<UserNotFoundError>())
         {
-            user = User.Create(userData.Email, userData.AvatarId);
+            var result = User.Create(userData.Email, userData.AvatarId, userData.DisplayName);
+            if (result.IsFailed) return Result.Fail(result.Errors);
+            user = result.Value;
             await _userRepository.Create(user);
         }
         else
@@ -40,6 +42,8 @@ public class AuthenticationService(
             await _userRepository.Update(user);
         }
 
-        return _tokenIssuer.IssueToken(user);
+        return new AuthenticationDto(
+            Email: userData.Email,
+            AccessToken: _tokenIssuer.IssueToken(user));
     }
 }

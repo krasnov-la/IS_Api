@@ -17,7 +17,13 @@ public class OAuthHandler() : IOAuthHandler
         var response = await client.GetAsync("https://login.yandex.ru/info?format=json");
         var token = await response.Content.ReadAsStringAsync();
         var deserialize = JsonSerializer.Deserialize<YandexUserData>(token);
-        if (deserialize is null || deserialize.AvatarId is null || deserialize.Email is null) return Result.Fail(new OAuthError());
+        if (
+            deserialize is null 
+            || deserialize.AvatarId is null 
+            || deserialize.Email is null
+            || deserialize.DisplayName is null) 
+            return Result.Fail(new OAuthError());
+            
         return Result.Ok(deserialize);
     }
 }

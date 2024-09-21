@@ -14,7 +14,7 @@ public class RepositoryBase(DbContext db)
         {
             await _db.SaveChangesAsync();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             //TODO Logging
             return Result.Fail(new UnexpectedError());

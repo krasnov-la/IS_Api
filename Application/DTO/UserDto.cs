@@ -1,11 +1,11 @@
 namespace Application.DTO;
 
 public record UserDto(
-    string? AvatarImgLink,
-    string? Nickname,
+    string AvatarImgLink,
+    string Nickname,
     string EmailAddress,
-    string? FirstName,
-    string? LastName,
+    string FirstName,
+    string LastName,
     string? MiddleName,
     string Role,
     string? Course,

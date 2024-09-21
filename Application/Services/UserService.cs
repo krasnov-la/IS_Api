@@ -49,27 +49,24 @@ public class UserService(IUserRepository userRepository) : ServiceBase, IUserSer
 
         user.Update(
             command.Nickname,
-            command.FirstName,
-            command.LastName,
-            command.MiddleName,
             command.Course
         );
 
         return await _userRepository.Update(user);
     }
 
-    public async Task<Result> Verify(UserVerificationCommand command)
-    {
-        if (command.Role == Role.Unverified || command.Role == Role.Banned)
-            return Result.Fail(new InvalidRoleError(command.Role));
-        Result<User> result = await _userRepository.GetByEmail(command.Email);
-        if (result.IsFailed) return Result.Fail(result.Errors);
-        var user = result.Value;
+    // public async Task<Result> Verify(UserVerificationCommand command)
+    // {
+    //     if (command.Role == Role.Unverified || command.Role == Role.Banned)
+    //         return Result.Fail(new InvalidRoleError(command.Role));
+    //     Result<User> result = await _userRepository.GetByEmail(command.Email);
+    //     if (result.IsFailed) return Result.Fail(result.Errors);
+    //     var user = result.Value;
 
-        user.Verify(command.Role);
+    //     user.Verify(command.Role);
 
-        return await _userRepository.Update(user);
-    }
+    //     return await _userRepository.Update(user);
+    // }
 
     private static UserDto ToDto(User user)
     {

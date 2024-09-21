@@ -59,7 +59,7 @@ public static class DependencyInjection
                 ValidIssuer = jwt["Issuer"],
                 ValidAudience = jwt["Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(jwt["Key"])),
+                    Encoding.UTF8.GetBytes(jwt["Key"]!)),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,

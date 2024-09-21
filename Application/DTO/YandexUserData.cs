@@ -6,5 +6,7 @@ public record YandexUserData(
     [property: JsonPropertyName("default_email")]
     string Email,
     [property: JsonPropertyName("default_avatar_id")]
-    string AvatarId
+    string AvatarId,
+    [property: JsonPropertyName("display_name")]
+    string DisplayName
 );

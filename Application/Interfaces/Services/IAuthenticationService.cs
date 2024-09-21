@@ -1,10 +1,11 @@
 
 
+using Application.DTO;
 using FluentResults;
 
 namespace Application.Interfaces.Services;
 
 public interface IAuthenticationService
 {
-    Task<Result<string>> Login(string oAuth);
+    Task<Result<AuthenticationDto>> Login(string oAuth);
 }
