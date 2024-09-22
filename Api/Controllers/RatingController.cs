@@ -23,7 +23,6 @@ public class RatingController(IRatingService ratingService) : ApiController
     }
 
     [HttpGet("user/{email}")]
-    [Authorize]
     [Produces(typeof(PersonalRatingResponse))]
     public async Task<IActionResult> GetRating(string email)
     {
