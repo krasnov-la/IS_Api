@@ -15,10 +15,19 @@ public class RatingController(IRatingService ratingService) : ApiController
 
     [HttpGet("personal")]
     [Authorize("Student")]
-    [Produces(typeof(GlobalRatingResponse))]
+    [Produces(typeof(PersonalRatingResponse))]
     public async Task<IActionResult> PersonalRating()
     {
         Result<RatingDto> result = await _ratingService.GetPersonalRating(HttpContext.User);
+        return ResultToResponse(result, ToPersonalResponse);
+    }
+
+    [HttpGet("user/{email}")]
+    [Authorize]
+    [Produces(typeof(PersonalRatingResponse))]
+    public async Task<IActionResult> GetRating(string email)
+    {
+        Result<RatingDto> result = await _ratingService.GetRating(email);
         return ResultToResponse(result, ToPersonalResponse);
     }
 

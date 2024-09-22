@@ -19,4 +19,9 @@ public class RatingService(IRatingRepository ratingRepository) : ServiceBase, IR
     {        
         return await _ratingRepository.GetPersonalRating(new Student(ExtractEmail(user)));
     }
+
+    public async Task<Result<RatingDto>> GetRating(string email)
+    {
+        return await _ratingRepository.GetPersonalRating(new Student(email));
+    }
 }
